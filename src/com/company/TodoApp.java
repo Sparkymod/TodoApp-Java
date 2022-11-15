@@ -21,16 +21,6 @@ public class TodoApp {
         AsignarTextos();
     }
 
-    public TodoApp(){
-        agregarTareaBtn.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-    }
-
     private void AsignarTextos(){
         agregarTareaBtn.setText("Agregar Tarea");
         editarTareaBtn.setText("Editar Tarea");
