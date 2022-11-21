@@ -97,7 +97,10 @@
         <children>
           <component id="f657d" class="javax.swing.JList" binding="listCategoria">
             <constraints/>
-            <properties/>
+            <properties>
+              <model/>
+              <selectionMode value="0"/>
+            </properties>
           </component>
         </children>
       </scrollpane>
