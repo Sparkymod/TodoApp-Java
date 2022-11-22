@@ -1,5 +1,6 @@
 package com.company.Models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Categoria {
@@ -7,12 +8,17 @@ public class Categoria {
     private String Descripcion;
     private List<Tarea> Tareas;
 
+    public Categoria(){
+        Descripcion = "Na";
+        Tareas = new ArrayList<>();
+    }
+
     public String getDescripcion() {
         return Descripcion;
     }
 
     public void setDescripcion(String descripcion) {
-        Descripcion = descripcion;
+        Descripcion = descripcion.isEmpty() ? "Na" : descripcion;
     }
 
     public int getId() {

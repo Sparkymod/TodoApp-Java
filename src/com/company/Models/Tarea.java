@@ -12,6 +12,17 @@ public class Tarea {
     private Propietario Propietario;
     private Categoria Categoria;
 
+    public Tarea(){
+        Id = 0;
+        Titulo = "Na";
+        Descripcion = "Na";
+        Completado = false;
+        FechaInicio = new Date();
+        FechaFinal = new Date();
+        Propietario = new Propietario();
+        Categoria = new Categoria();
+    }
+
     public int getId() {
         return Id;
     }
@@ -25,7 +36,7 @@ public class Tarea {
     }
 
     public void setTitulo(String titulo) {
-        Titulo = titulo;
+        Titulo = titulo.isEmpty() ? "Na" : titulo;;
     }
 
     public String getDescripcion() {
@@ -33,7 +44,7 @@ public class Tarea {
     }
 
     public void setDescripcion(String descripcion) {
-        Descripcion = descripcion;
+        Descripcion = descripcion.isEmpty() ? "Na" : descripcion;
     }
 
     public boolean isCompletado() {
@@ -65,7 +76,7 @@ public class Tarea {
     }
 
     public void setPropietario(Propietario propietario) {
-        Propietario = propietario;
+        Propietario = propietario != null ? propietario : new Propietario();
     }
 
     public Categoria getCategoria() {
@@ -73,6 +84,6 @@ public class Tarea {
     }
 
     public void setCategoria(Categoria categoria) {
-        Categoria = categoria;
+        Categoria = categoria != null ? categoria : new Categoria();
     }
 }

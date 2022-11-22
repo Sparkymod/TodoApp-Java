@@ -6,6 +6,11 @@ public class Propietario extends Autor{
     private Date FechaCreacion;
     private boolean Activo;
 
+    public Propietario(){
+        FechaCreacion = new Date();
+        Activo = true;
+    }
+
     public Date getFechaCreacion() {
         return FechaCreacion;
     }

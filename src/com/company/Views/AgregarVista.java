@@ -26,6 +26,9 @@ public class AgregarVista extends JDialog {
     private Tarea TareaActual;
 
     public AgregarVista() {
+        if (TareaActual == null){
+            TareaActual = new Tarea();
+        }
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -74,7 +77,4 @@ public class AgregarVista extends JDialog {
         dispose();
     }
 
-    public Tarea getTarea(){
-        return TareaActual;
-    }
 }

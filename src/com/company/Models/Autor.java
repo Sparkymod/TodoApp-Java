@@ -4,6 +4,10 @@ public class Autor {
     private int Id;
     private String Nombre;
 
+    public Autor(){
+        Nombre = "Na";
+    }
+
     public int getId() {
         return Id;
     }
@@ -17,6 +21,6 @@ public class Autor {
     }
 
     public void setNombre(String nombre) {
-        Nombre = nombre;
+        Nombre = nombre.isEmpty() ? "Na" : nombre;
     }
 }
