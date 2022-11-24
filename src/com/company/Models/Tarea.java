@@ -1,5 +1,6 @@
 package com.company.Models;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class Tarea {
@@ -12,13 +13,20 @@ public class Tarea {
     private Propietario Propietario;
     private Categoria Categoria;
 
-    public Tarea(){
-        Id = 0;
+    /**
+     * Este valor simula que es generado en base de datos para obtener
+     * un ID diferente cada vez que una tarea nueva es construida
+     **/
+    public static int DbId = 0;
+
+    public Tarea() {
+        DbId++;
+        Id = DbId;
         Titulo = "Na";
         Descripcion = "Na";
         Completado = false;
-        FechaInicio = new Date();
-        FechaFinal = new Date();
+        FechaInicio = Calendar.getInstance().getTime();
+        FechaFinal = Calendar.getInstance().getTime();
         Propietario = new Propietario();
         Categoria = new Categoria();
     }
@@ -36,7 +44,8 @@ public class Tarea {
     }
 
     public void setTitulo(String titulo) {
-        Titulo = titulo.isEmpty() ? "Na" : titulo;;
+        Titulo = titulo.isEmpty() ? "Na" : titulo;
+        ;
     }
 
     public String getDescripcion() {
@@ -60,7 +69,7 @@ public class Tarea {
     }
 
     public void setFechaInicio(Date fechaInicio) {
-        FechaInicio = fechaInicio;
+        FechaInicio = fechaInicio != null ? fechaInicio : Calendar.getInstance().getTime();
     }
 
     public Date getFechaFinal() {
@@ -68,7 +77,7 @@ public class Tarea {
     }
 
     public void setFechaFinal(Date fechaFinal) {
-        FechaFinal = fechaFinal;
+        FechaFinal = fechaFinal != null ? fechaFinal : Calendar.getInstance().getTime();
     }
 
     public Propietario getPropietario() {

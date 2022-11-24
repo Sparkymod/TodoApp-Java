@@ -8,7 +8,14 @@ public class Categoria {
     private String Descripcion;
     private List<Tarea> Tareas;
 
-    public Categoria(){
+    /**
+     * Este valor simula que es generado en base de datos para obtener
+     * un ID diferente cada vez que una tarea nueva es construida
+     **/
+    public static int DbId = 0;
+
+    public Categoria() {
+        Id = DbId + 1;
         Descripcion = "Na";
         Tareas = new ArrayList<>();
     }
@@ -34,6 +41,6 @@ public class Categoria {
     }
 
     public void setTareas(List<Tarea> tareas) {
-        Tareas = tareas;
+        Tareas = tareas != null ? tareas : new ArrayList<>();
     }
 }

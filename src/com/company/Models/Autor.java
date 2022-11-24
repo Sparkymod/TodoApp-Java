@@ -4,7 +4,14 @@ public class Autor {
     private int Id;
     private String Nombre;
 
-    public Autor(){
+    /**
+     * Este valor simula que es generado en base de datos para obtener
+     * un ID diferente cada vez que una tarea nueva es construida
+     **/
+    public static int DbId = 0;
+
+    public Autor() {
+        Id = DbId + 1;
         Nombre = "Na";
     }
 

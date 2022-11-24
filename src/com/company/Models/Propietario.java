@@ -1,5 +1,6 @@
 package com.company.Models;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class Propietario extends Autor{
@@ -16,7 +17,7 @@ public class Propietario extends Autor{
     }
 
     public void setFechaCreacion(Date fechaCreacion) {
-        FechaCreacion = fechaCreacion;
+        FechaCreacion = fechaCreacion != null ? fechaCreacion : Calendar.getInstance().getTime();
     }
 
     public boolean isActivo() {

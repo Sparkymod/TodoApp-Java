@@ -1,18 +1,14 @@
 package com.company;
 
+import com.company.Database.DbStorage;
 import com.company.Models.Categoria;
-import com.company.Models.Propietario;
 import com.company.Models.Tarea;
 import com.company.Views.AgregarVista;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Vector;
 
 public class TodoApp {
     private JPanel panelContenedor;
@@ -27,53 +23,79 @@ public class TodoApp {
     private JList<Categoria> listCategoria;
     private JScrollPane panelCategoria;
     private JPanel panelControlCategoria;
+    private JPanel panelCategoriaContainer;
+    private JPanel panelPropietarioContainer;
+    private JPanel panelListContainer;
+    private JScrollPane scrollPropietario;
+    private JList listPropietario;
+    private JButton agregarPropietarioBtn;
+    private JButton modificarPropietarioBtn;
 
-    public Tarea[] Tareas;
-    public Categoria[] Categorias;
-    public Propietario[] Propietarios;
+    private DefaultTableModel tableModel;
 
-    public void crearApp(){
+    public void crearApp() {
         inicializarComponentes();
         asignarTextos();
-        agregarAcciones();
+        cargarAcciones();
         crearCabeceraTabla();
+        cargarTabla();
     }
 
-    private void inicializarComponentes(){
+    private void inicializarComponentes() {
         JFrame app = new JFrame("Todo App");
         app.setVisible(true);
-        app.setMinimumSize(new Dimension(1080,520));
+        app.setMinimumSize(new Dimension(1080, 520));
         app.add(panelContenedor);
         app.pack();
 
-        Tareas = new Tarea[]{ new Tarea()};
-        Categorias = new Categoria[]{new Categoria()};
-        Propietarios = new Propietario[]{new Propietario()};
     }
 
-    private void agregarAcciones(){
+    private void cargarAcciones() {
         agregarTareaBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 AgregarVista vista = new AgregarVista();
                 vista.pack();
                 vista.setVisible(true);
+                cargarTabla();
+            }
+        });
+        eliminarTareaBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = tablaMostrarTareas.getSelectedRow();
+                if (tablaMostrarTareas.isRowSelected(row)) {
+                    DbStorage.removerTarea(row);
+                    tableModel.removeRow(row);
+                }
+            }
+        });
+        modificarTareaBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = tablaMostrarTareas.getSelectedRow();
+                if (tablaMostrarTareas.isRowSelected(row)) {
+
+                }
             }
         });
     }
 
-    private void asignarTextos(){
+    private void asignarTextos() {
         eliminarTareaBtn.setText("Eliminar tarea");
         agregarCategoriaBtn.setText("Agregar categoría");
         modificarCategroriaBtn.setText("Modificar categoría");
         modificarTareaBtn.setText("Modificar tarea");
         agregarTareaBtn.setText("Agregar tarea");
+        agregarPropietarioBtn.setText("Agregar propietario");
+        modificarPropietarioBtn.setText("Modificar propietario");
     }
 
-    private void crearCabeceraTabla(){
-        DefaultTableModel tableModel = new DefaultTableModel();
+    private void crearCabeceraTabla() {
+        tableModel = new DefaultTableModel();
         tablaMostrarTareas.setModel(tableModel);
 
         tablaMostrarTareas.setRowHeight(30);
+
         tableModel.addColumn("Id");
         tableModel.addColumn("Titulo");
         tableModel.addColumn("Descripcion");
@@ -83,28 +105,17 @@ public class TodoApp {
         tableModel.addColumn("FechaInicio");
         tableModel.addColumn("FechaFinal");
 
-        tableModel.addRow(Tareas);
-
-        TableColumn sportColumn = tablaMostrarTareas.getColumnModel().getColumn(4);
-
-        JComboBox comboBox = new JComboBox();
-        comboBox.addItem("Snowboarding");
-        comboBox.addItem("Rowing");
-        comboBox.addItem("Chasing toddlers");
-        comboBox.addItem("Speed reading");
-        comboBox.addItem("Teaching high school");
-        comboBox.addItem("None");
-        sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
     }
 
-    private void agregarTarea(Tarea nuevaTarea){
-        Tarea[] nuevaLista = new Tarea[Tareas.length + 1];
-        if (nuevaTarea != null){
-            for(int i = 0; i < Tareas.length; i++){
-                nuevaLista[i] = Tareas[i];
+    private void cargarTabla() {
+        crearCabeceraTabla();
+        for (Tarea tarea : DbStorage.Tareas) {
+            if (tarea != null) {
+                Object[] tareaTabla = new Object[]{
+                        tarea.getId()
+                };
+                tableModel.addRow(tareaTabla);
             }
-            nuevaLista[Tareas.length] = nuevaTarea;
-            Tareas = nuevaLista;
         }
     }
 }
