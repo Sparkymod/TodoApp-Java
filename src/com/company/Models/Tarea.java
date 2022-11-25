@@ -45,7 +45,6 @@ public class Tarea {
 
     public void setTitulo(String titulo) {
         Titulo = titulo.isEmpty() ? "Na" : titulo;
-        ;
     }
 
     public String getDescripcion() {

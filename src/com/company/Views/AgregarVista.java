@@ -5,19 +5,16 @@ import com.company.Models.*;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.Calendar;
 
 public class AgregarVista extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JPanel panelBotones;
-    private JPanel panelTareaDatos;
     private JLabel labelTitulo;
     private JTextField txtTitulo;
     private JLabel labelDescripcion;
     private JTextField txtDescripcion;
-    private JLabel labelCompletado;
+    private JLabel labelCategoria;
     private JCheckBox boxCompletado;
     private JComboBox<String> boxCategorias;
     private JLabel labelPropietario;
@@ -27,8 +24,8 @@ public class AgregarVista extends JDialog {
     private JLabel labelFechaFinal;
     private JComboBox boxFechaFinal;
 
-    private Tarea TareaActual;
-
+    private Tarea tareaActual;
+    private boolean editando = false;
 
     public AgregarVista() {
         setContentPane(contentPane);
@@ -62,29 +59,47 @@ public class AgregarVista extends JDialog {
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        cargarCategorias();
-        cargarPropietarios();
-    }
-
-    private void asignarValoresATarea(){
-        Categoria categoria = getCategoriaSeleccionado();
-        Propietario propietario = getPropietarioSeleccionado();
-
-        TareaActual.setTitulo(txtTitulo.getText());
-        TareaActual.setDescripcion(txtDescripcion.getText());
-        TareaActual.setCategoria(categoria);
-        TareaActual.setPropietario(propietario);
-        TareaActual.setCompletado(boxCompletado.isSelected());
+        asignarTextos();
+        editarTarea(null);
     }
 
     private void onOK() {
-        TareaActual = new Tarea();
-        TareaActual.setTitulo("Prueba");
-        TareaActual.setDescripcion("Prueba de tarea");
-        TareaActual.setCompletado(true);
-
-        DbStorage.agregarTarea(TareaActual);
+        agregarTarea();
         dispose();
+    }
+
+    private void agregarTarea() {
+        Categoria categoria = getCategoriaSeleccionado();
+        Propietario propietario = getPropietarioSeleccionado();
+
+        tareaActual.setTitulo(txtTitulo.getText());
+        tareaActual.setDescripcion(txtDescripcion.getText());
+        tareaActual.setCategoria(categoria);
+        tareaActual.setPropietario(propietario);
+        tareaActual.setCompletado(boxCompletado.isSelected());
+
+        if (editando) {
+            DbStorage.editarTarea(tareaActual);
+        } else {
+            DbStorage.agregarTarea(tareaActual);
+        }
+    }
+
+    public void editarTarea(Tarea tarea) {
+        if (tarea == null) {
+            tareaActual = new Tarea();
+            editando = false;
+            cargarCategorias();
+            cargarPropietarios();
+        } else {
+            editando = true;
+            tareaActual = tarea;
+            txtTitulo.setText(tareaActual.getTitulo());
+            txtDescripcion.setText(tareaActual.getDescripcion());
+            boxCategorias.addItem(tareaActual.getCategoria().getDescripcion());
+            boxPropietarios.addItem(tareaActual.getPropietario().getNombre());
+            boxCompletado.setSelected(tareaActual.isCompletado());
+        }
     }
 
     private void cargarCategorias() {
@@ -122,7 +137,16 @@ public class AgregarVista extends JDialog {
     }
 
     private void onCancel() {
-        // add your code here if necessary
         dispose();
+    }
+
+    private void asignarTextos() {
+        labelTitulo.setText("Titulo");
+        labelDescripcion.setText("Descripción");
+        labelCategoria.setText("Categoría");
+        labelPropietario.setText("Propietario");
+        labelFechaFinal.setText("Fecha final");
+        labelFechaInicial.setText("Fecha inicial");
+        boxCompletado.setText("Completado");
     }
 }

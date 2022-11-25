@@ -15,7 +15,8 @@ public class Categoria {
     public static int DbId = 0;
 
     public Categoria() {
-        Id = DbId + 1;
+        DbId++;
+        Id = DbId;
         Descripcion = "Na";
         Tareas = new ArrayList<>();
     }

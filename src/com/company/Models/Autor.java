@@ -11,7 +11,8 @@ public class Autor {
     public static int DbId = 0;
 
     public Autor() {
-        Id = DbId + 1;
+        DbId++;
+        Id = DbId;
         Nombre = "Na";
     }
 

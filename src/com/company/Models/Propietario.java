@@ -12,7 +12,7 @@ public class Propietario extends Autor{
         Activo = true;
     }
 
-    public Date getFechaCreacion() {
+    public Date getFechaCreacion(Date date) {
         return FechaCreacion;
     }
 
