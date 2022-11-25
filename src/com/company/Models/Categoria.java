@@ -6,7 +6,6 @@ import java.util.List;
 public class Categoria {
     private int Id;
     private String Descripcion;
-    private List<Tarea> Tareas;
 
     /**
      * Este valor simula que es generado en base de datos para obtener
@@ -18,7 +17,6 @@ public class Categoria {
         DbId++;
         Id = DbId;
         Descripcion = "Na";
-        Tareas = new ArrayList<>();
     }
 
     public String getDescripcion() {
@@ -35,13 +33,5 @@ public class Categoria {
 
     public void setId(int id) {
         Id = id;
-    }
-
-    public List<Tarea> getTareas() {
-        return Tareas;
-    }
-
-    public void setTareas(List<Tarea> tareas) {
-        Tareas = tareas != null ? tareas : new ArrayList<>();
     }
 }

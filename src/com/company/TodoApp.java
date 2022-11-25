@@ -5,8 +5,12 @@ import com.company.Models.Categoria;
 import com.company.Models.Propietario;
 import com.company.Models.Tarea;
 import com.company.Views.AgregarVista;
+import com.company.Views.CategoriaVista;
+import com.company.Views.PropietarioVista;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
@@ -23,13 +27,21 @@ public class TodoApp {
     private JButton modificarPropietarioBtn;    // Boton de modificar propietario
     private JButton eliminarCategoriaBtn;       // Boton de eliminar categoria
     private JButton eliminarPropietarioBtn;     // Boton de eliminar propietario
-    private JList<String> listCategoria;                // Lista de categorias
-    private JList<String> listPropietario;              // Lista de propietarios
+    private JList<String> listCategoria;        // Lista de categorias
+    private JList<String> listPropietario;      // Lista de propietarios
 
     /**
      * Campo privado que será utilizado en toda la app para servir como modelo de la tabla
      */
     private DefaultTableModel tableModel;
+    /**
+     * Campo privado que será utilizado en toda la app para servir como modelo de la lista de categoria
+     */
+    private DefaultListModel<String> listModelCategoria;
+    /**
+     * Campo privado que será utilizado en toda la app para servir como modelo de la lista de propietario
+     */
+    private DefaultListModel<String> listModelPropietario;
 
     /**
      * Metodo para crear la aplicación.
@@ -111,6 +123,101 @@ public class TodoApp {
                 }
             }
         });
+
+        // Seccián de Categoría
+        agregarCategoriaBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CategoriaVista vista = new CategoriaVista();
+
+                vista.pack();
+                vista.setVisible(true);
+
+                cargarCategorias();
+            }
+        });
+        modificarCategroriaBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = listCategoria.getSelectedIndex();
+                if (listCategoria.isSelectedIndex(row)) {
+
+                    CategoriaVista vista = new CategoriaVista();
+                    Categoria categoria = DbStorage.obtenerCategoria(row);
+
+                    vista.editarCategoria(categoria);
+                    vista.pack();
+                    vista.setVisible(true);
+
+                    cargarCategorias();
+                }
+            }
+        });
+        eliminarCategoriaBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = listCategoria.getSelectedIndex();
+                if (listCategoria.isSelectedIndex(row)) {
+                    DbStorage.removerCategoria(row);
+                    listModelCategoria.remove(row);
+                }
+                cargarCategorias();
+            }
+        });
+        listCategoria.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                cargarTabla();
+            }
+        });
+
+        // Seccián de Propietario
+        agregarPropietarioBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PropietarioVista vista = new PropietarioVista();
+
+                vista.pack();
+                vista.setVisible(true);
+
+                cargarPropietarios();
+            }
+        });
+        modificarPropietarioBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = listPropietario.getSelectedIndex();
+                if (listPropietario.isSelectedIndex(row)) {
+
+                    PropietarioVista vista = new PropietarioVista();
+                    Propietario propietario = DbStorage.obtenerPropietario(row);
+
+                    vista.editarPropietario(propietario);
+                    vista.pack();
+                    vista.setVisible(true);
+
+                    cargarPropietarios();
+                }
+            }
+        });
+        eliminarPropietarioBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = listPropietario.getSelectedIndex();
+                if (listPropietario.isSelectedIndex(row)) {
+                    DbStorage.removerPropietario(row);
+                    listModelPropietario.remove(row);
+                }
+                cargarPropietarios();
+            }
+        });
+        listPropietario.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                cargarTabla();
+            }
+        });
+
     }
 
     /**
@@ -155,43 +262,51 @@ public class TodoApp {
      * cada dato de la lista de <b>DbStorage.Tareas</b>
      */
     private void cargarTabla() {
+        // Se recarga la tabla con su cabecera
         crearCabeceraTabla();
         for (Tarea tarea : DbStorage.Tareas) {
             if (tarea != null) {
-                // Se crea un arreglo de objetos que contendra la informacion de cada columna
-                // para luego agregarlo a la tabla debido a la naturaleza
-                // de la tabla que solo agrega
-                String completado = "";
-                if (tarea.isCompletado()) {
-                    completado = "Completado";
-                } else {
-                    completado = "No completado";
+                int row = listCategoria.getSelectedIndex();
+                boolean catIgual = false;
+
+                // Si tenemos una categoria seleccionada entonces procede a mostrar en base a esa categoria.
+                if (listCategoria.isSelectedIndex(row)) {
+                    String categoria = DbStorage.Categorias.get(row).getDescripcion();
+                    catIgual = categoria.equalsIgnoreCase(tarea.getCategoria().getDescripcion());
                 }
-                Object[] tareaTabla = new Object[]{
-                        tarea.getId(), tarea.getTitulo(), tarea.getDescripcion(),
-                        tarea.getCategoria().getDescripcion(), tarea.getPropietario().getNombre(),
-                        completado, tarea.getFechaInicio(), tarea.getFechaFinal()
-                };
-                tableModel.addRow(tareaTabla);
+
+                if (catIgual) {
+                    // Aislamos el metodo para mejor lectura de codigo.
+                    Object[] tareaTabla = DbStorage.tareaAMostrar(tarea);
+                    tableModel.addRow(tareaTabla);
+                }
             }
         }
     }
 
+    /**
+     * Metodo para cargar y recargar categorias en la lista
+     */
     private void cargarCategorias() {
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        listCategoria.setModel(listModel);
+        // Se reinicia la lista y recarga con los datos.
+        listModelCategoria = new DefaultListModel<>();
+        listCategoria.setModel(listModelCategoria);
 
         for (Categoria cat : DbStorage.Categorias) {
-            listModel.addElement(cat.getDescripcion());
+            listModelCategoria.addElement(cat.getDescripcion());
         }
     }
 
+    /**
+     * Metodo para cargar y recargar propietarios en la lista
+     */
     private void cargarPropietarios() {
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        listPropietario.setModel(listModel);
+        // Se reinicia la lista y recarga con los datos
+        listModelPropietario = new DefaultListModel<>();
+        listPropietario.setModel(listModelPropietario);
 
         for (Propietario prop : DbStorage.Propietarios) {
-            listModel.addElement(prop.getNombre());
+            listModelPropietario.addElement(prop.getNombre());
         }
     }
 }

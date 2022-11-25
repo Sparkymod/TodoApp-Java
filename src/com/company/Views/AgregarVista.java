@@ -60,7 +60,12 @@ public class AgregarVista extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         asignarTextos();
-        editarTarea(null);
+        if (boxCategorias.getItemCount() == 0) {
+            cargarCategorias();
+        }
+        if (boxPropietarios.getItemCount() == 0) {
+            cargarPropietarios();
+        }
     }
 
     private void onOK() {
@@ -69,6 +74,9 @@ public class AgregarVista extends JDialog {
     }
 
     private void agregarTarea() {
+        if (tareaActual == null){
+            tareaActual = new Tarea();
+        }
         Categoria categoria = getCategoriaSeleccionado();
         Propietario propietario = getPropietarioSeleccionado();
 
@@ -87,17 +95,14 @@ public class AgregarVista extends JDialog {
 
     public void editarTarea(Tarea tarea) {
         if (tarea == null) {
-            tareaActual = new Tarea();
             editando = false;
-            cargarCategorias();
-            cargarPropietarios();
         } else {
             editando = true;
             tareaActual = tarea;
             txtTitulo.setText(tareaActual.getTitulo());
             txtDescripcion.setText(tareaActual.getDescripcion());
-            boxCategorias.addItem(tareaActual.getCategoria().getDescripcion());
-            boxPropietarios.addItem(tareaActual.getPropietario().getNombre());
+            boxCategorias.setSelectedItem(tareaActual.getCategoria().getDescripcion());
+            boxPropietarios.setSelectedItem(tareaActual.getPropietario().getNombre());
             boxCompletado.setSelected(tareaActual.isCompletado());
         }
     }
@@ -115,7 +120,7 @@ public class AgregarVista extends JDialog {
     }
 
     private Propietario getPropietarioSeleccionado() {
-        Object categoriaSeleccionada = boxCategorias.getSelectedItem();
+        Object categoriaSeleccionada = boxPropietarios.getSelectedItem();
 
         if (categoriaSeleccionada != null) {
             Propietario propietario = DbStorage.obtenerPropietario(categoriaSeleccionada.toString());
@@ -148,5 +153,6 @@ public class AgregarVista extends JDialog {
         labelFechaFinal.setText("Fecha final");
         labelFechaInicial.setText("Fecha inicial");
         boxCompletado.setText("Completado");
+        buttonOK.setText("Aplicar");
     }
 }

@@ -47,4 +47,6 @@ public class App {
         propietario2.getFechaCreacion(Calendar.getInstance().getTime());
         DbStorage.agregarPropietario(propietario2);
     }
+
+
 }
