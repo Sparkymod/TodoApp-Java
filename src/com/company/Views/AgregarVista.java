@@ -5,6 +5,7 @@ import com.company.Models.*;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.Calendar;
 
 public class AgregarVista extends JDialog {
     private JPanel contentPane;
@@ -20,9 +21,9 @@ public class AgregarVista extends JDialog {
     private JLabel labelPropietario;
     private JComboBox<String> boxPropietarios;
     private JLabel labelFechaInicial;
-    private JComboBox boxFechaInicial;
+    private JTextField textFechaInicial;
     private JLabel labelFechaFinal;
-    private JComboBox boxFechaFinal;
+    private JTextField textFechaFinal;
 
     private Tarea tareaActual;
     private boolean editando = false;
@@ -85,6 +86,8 @@ public class AgregarVista extends JDialog {
         tareaActual.setCategoria(categoria);
         tareaActual.setPropietario(propietario);
         tareaActual.setCompletado(boxCompletado.isSelected());
+        tareaActual.setFechaInicio(Calendar.getInstance().getTime());
+        tareaActual.setFechaFinal(Calendar.getInstance().getTime());
 
         if (editando) {
             DbStorage.editarTarea(tareaActual);
@@ -104,6 +107,8 @@ public class AgregarVista extends JDialog {
             boxCategorias.setSelectedItem(tareaActual.getCategoria().getDescripcion());
             boxPropietarios.setSelectedItem(tareaActual.getPropietario().getNombre());
             boxCompletado.setSelected(tareaActual.isCompletado());
+            textFechaInicial.setText(tarea.getFechaInicio().toString());
+            textFechaFinal.setText(tarea.getFechaFinal().toString());
         }
     }
 

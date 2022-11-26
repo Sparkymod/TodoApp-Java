@@ -13,7 +13,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class TodoApp {
     private JPanel panelContenedor;             // Contenedor de toda la app
@@ -29,6 +30,8 @@ public class TodoApp {
     private JButton eliminarPropietarioBtn;     // Boton de eliminar propietario
     private JList<String> listCategoria;        // Lista de categorias
     private JList<String> listPropietario;      // Lista de propietarios
+    private JButton tareasCompletadasBtn;
+    private JButton tareasPendientesBtn;
 
     /**
      * Campo privado que será utilizado en toda la app para servir como modelo de la tabla
@@ -121,6 +124,18 @@ public class TodoApp {
 
                     cargarTabla();
                 }
+            }
+        });
+        tareasCompletadasBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cargarTareasCompletadas();
+            }
+        });
+        tareasPendientesBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cargarTareasPendiente();
             }
         });
 
@@ -233,6 +248,8 @@ public class TodoApp {
         modificarPropietarioBtn.setText("Modificar propietario");
         eliminarCategoriaBtn.setText("Eliminar categoría");
         eliminarPropietarioBtn.setText("Eliminar propietario");
+        tareasCompletadasBtn.setText("Ver tareas completadas");
+        tareasPendientesBtn.setText("Ver tareas pendientes");
     }
 
     /**
@@ -277,6 +294,30 @@ public class TodoApp {
 
                 if (catIgual) {
                     // Aislamos el metodo para mejor lectura de codigo.
+                    Object[] tareaTabla = DbStorage.tareaAMostrar(tarea);
+                    tableModel.addRow(tareaTabla);
+                }
+            }
+        }
+    }
+
+    private void cargarTareasCompletadas() {
+        crearCabeceraTabla();
+        for (Tarea tarea : DbStorage.Tareas) {
+            if (tarea != null) {
+                if (tarea.isCompletado()) {
+                    Object[] tareaTabla = DbStorage.tareaAMostrar(tarea);
+                    tableModel.addRow(tareaTabla);
+                }
+            }
+        }
+    }
+
+    private void cargarTareasPendiente() {
+        crearCabeceraTabla();
+        for (Tarea tarea : DbStorage.Tareas) {
+            if (tarea != null) {
+                if (!tarea.isCompletado()) {
                     Object[] tareaTabla = DbStorage.tareaAMostrar(tarea);
                     tableModel.addRow(tareaTabla);
                 }
