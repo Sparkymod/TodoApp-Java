@@ -2,6 +2,7 @@ package com.company.Database;
 
 import com.company.Models.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class DbStorage {
@@ -96,6 +97,10 @@ public class DbStorage {
      */
     public static void removerTarea(int fila) {
         if (!Tareas.isEmpty()) {
+            // Debe haber almenos 1 en la lista, simulando el valor por "Default"
+            if(Tareas.size() <= 1){
+                return;
+            }
             Tareas.remove(fila);
         }
     }
@@ -107,7 +112,13 @@ public class DbStorage {
      */
     public static void removerCategoria(int fila) {
         if (!Categorias.isEmpty()) {
+            // Debe haber almenos 1 en la lista, simulando el valor por "Default"
+            if(Categorias.size() <= 1){
+                return;
+            }
+            Categoria cat = obtenerCategoria(fila);
             Categorias.remove(fila);
+            reasignarTareasPorCategoria(cat);
         }
     }
 
@@ -118,7 +129,13 @@ public class DbStorage {
      */
     public static void removerPropietario(int fila) {
         if (!Propietarios.isEmpty()) {
+            // Debe haber almenos 1 en la lista, simulando el valor por "Default"
+            if(Propietarios.size() <= 1){
+                return;
+            }
+            Propietario prop = obtenerPropietario(fila);
             Propietarios.remove(fila);
+            reasignarTareasPorPropietario(prop);
         }
     }
 
@@ -193,5 +210,27 @@ public class DbStorage {
             return Categorias.get(fila);
         }
         return null;
+    }
+
+    public static void reasignarTareasPorCategoria(Categoria cat){
+        if(cat != null){
+            for (Tarea tar:Tareas) {
+                if(tar.getCategoria().equals(cat)){
+                    tar.setCategoria(Categorias.getFirst());
+                    Tareas.set(Tareas.indexOf(tar), tar);
+                }
+            }
+        }
+    }
+
+    public static void reasignarTareasPorPropietario(Propietario prop){
+        if(prop != null){
+            for (Tarea tar:Tareas) {
+                if(tar.getPropietario().equals(prop)){
+                    tar.setPropietario(Propietarios.getFirst());
+                    Tareas.set(Tareas.indexOf(tar), tar);
+                }
+            }
+        }
     }
 }

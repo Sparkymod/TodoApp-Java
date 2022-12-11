@@ -32,6 +32,7 @@ public class TodoApp {
     private JList<String> listPropietario;      // Lista de propietarios
     private JButton tareasCompletadasBtn;
     private JButton tareasPendientesBtn;
+    private JButton tareasVerTodasBtn;
 
     /**
      * Campo privado que será utilizado en toda la app para servir como modelo de la tabla
@@ -136,6 +137,12 @@ public class TodoApp {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cargarTareasPendiente();
+            }
+        });
+        tareasVerTodasBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cargarTodasLasTareas();
             }
         });
 
@@ -250,6 +257,7 @@ public class TodoApp {
         eliminarPropietarioBtn.setText("Eliminar propietario");
         tareasCompletadasBtn.setText("Ver tareas completadas");
         tareasPendientesBtn.setText("Ver tareas pendientes");
+        tareasVerTodasBtn.setText("Ver Todas");
     }
 
     /**
@@ -321,6 +329,17 @@ public class TodoApp {
                     Object[] tareaTabla = DbStorage.tareaAMostrar(tarea);
                     tableModel.addRow(tareaTabla);
                 }
+            }
+        }
+    }
+
+    private void cargarTodasLasTareas() {
+        crearCabeceraTabla();
+        for (Tarea tarea : DbStorage.Tareas) {
+            if (tarea != null) {
+                Object[] tareaTabla = DbStorage.tareaAMostrar(tarea);
+                tableModel.addRow(tareaTabla);
+
             }
         }
     }
